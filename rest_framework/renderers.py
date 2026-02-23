@@ -590,7 +590,10 @@ class BrowsableAPIRenderer(BaseRenderer):
                 serializer = serializer.child if is_list_serializer else serializer
                 data = serializer.data.copy()
                 for name, field in serializer.fields.items():
-                    if isinstance(field, serializers.HiddenField):
+                    if (
+                        isinstance(field, serializers.HiddenField)
+                        or field.style.get('hide_raw_data')
+                    ):
                         data.pop(name, None)
                 data = [data] if is_list_serializer else data
                 content = renderer.render(data, accepted, context)

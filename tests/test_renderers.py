@@ -481,13 +481,15 @@ class TestHiddenFieldHTMLFormRenderer(TestCase):
     def test_hidden_field_rendering(self):
         class TestSerializer(serializers.Serializer):
             published = serializers.HiddenField(default=True)
+            author = serializers.CharField(style={'hide_raw_data': True})
 
         serializer = TestSerializer(data={})
         serializer.is_valid()
         renderer = HTMLFormRenderer()
-        field = serializer['published']
-        rendered = renderer.render_field(field, {})
-        assert rendered == ''
+        for name in ('published', 'author'):
+            field = serializer[name]
+            rendered = renderer.render_field(field, {})
+            assert rendered == ''
 
 
 class TestDateTimeFieldHTMLFormRender(TestCase):
